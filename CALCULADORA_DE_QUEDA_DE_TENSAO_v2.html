@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Queda de Tensão — NBR 5410</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c1117; --bg2:#111821; --card:#151d27; --card2:#1a2430; --line:#263241; --txt:#e9eef3; --muted:#8c9bab;
+  --accent:#f5b700; --accent-ink:#1a1400; --ok:#34d399; --bad:#f87171; --warn:#fbbf24;
+  --shadow:0 10px 30px -12px rgba(0,0,0,.6);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ --bg:#f3f1ec; --bg2:#ebe8e1; --card:#ffffff; --card2:#f8f6f2; --line:#e2ddd3; --txt:#1c1f24; --muted:#6b7280; --accent:#e0a100; --ok:#059669; --bad:#dc2626; --warn:#b45309; --shadow:0 10px 30px -14px rgba(60,40,0,.25); }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--txt);
+  font-family:Manrope,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  padding:0 14px 60px; padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1100px;margin:0 auto}
+header{display:flex;align-items:center;gap:14px;padding:22px 4px 18px;padding-top:calc(22px + env(safe-area-inset-top,0px))}
+.logo{width:44px;height:44px;border-radius:12px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:24px;font-weight:800;flex:none;box-shadow:0 6px 20px -6px var(--accent)}
+h1{font-size:1.25rem;margin:0;font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.8rem;margin-top:2px}
+.layout{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:960px){.layout{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.side{position:sticky;top:14px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.sec-title{display:flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:4px 0 12px}
+.sec-title .n{width:20px;height:20px;border-radius:6px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;color:var(--accent);font-size:.7rem}
+.group+.group{margin-top:20px;padding-top:18px;border-top:1px dashed var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label{display:block;font-size:.76rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+select,input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:.95rem;font-family:inherit;transition:border-color .15s,box-shadow .15s}
+input[type=number]{font-family:'JetBrains Mono',monospace;font-size:.9rem}
+select:hover,input:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+select:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+input:disabled{opacity:.45}
+.chk{display:flex;align-items:center;gap:8px;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--accent);margin:0}
+button{margin-top:16px;width:100%;padding:13px;border:none;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-size:.95rem;font-weight:800;font-family:inherit;cursor:pointer;transition:transform .1s,filter .15s}
+button:hover{filter:brightness(1.07)}
+button:active{transform:scale(.98)}
+.res{display:none}
+.res.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.kpi span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.05rem;margin-top:4px}
+.line{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line);font-size:.86rem}
+.line>span:first-child{color:var(--muted)}
+.line:last-of-type{border-bottom:none}
+.line b{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.84rem;text-align:right}
+.line.st{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:.76rem;font-weight:700;background:var(--card);border:1px solid var(--line);color:var(--muted)}
+.badge.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);border-color:color-mix(in srgb,var(--ok) 35%,transparent);color:var(--ok)}
+.badge.bad{background:color-mix(in srgb,var(--bad) 15%,transparent);border-color:color-mix(in srgb,var(--bad) 35%,transparent);color:var(--bad)}
+.badge.ok::before{content:"✓"} .badge.bad::before{content:"!"}
+.note{font-size:.76rem;color:var(--muted);margin-top:10px;line-height:1.55}
+details{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;font-size:.8rem;font-weight:700;color:var(--muted)}
+summary:hover{color:var(--txt)}
+.item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;font-size:.8rem;line-height:1.6}
+.item b{font-size:.9rem}
+.acts{display:flex;gap:6px}
+.acts button{width:auto;margin:8px 0 0;padding:6px 12px;font-size:.76rem;border-radius:8px}
+.sec{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.sec:hover{border-color:var(--accent)}
+.danger{margin:0;width:auto;padding:7px 12px;font-size:.76rem;border-radius:8px;background:transparent;border:1px solid color-mix(in srgb,var(--bad) 50%,transparent);color:var(--bad)}
+.head-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.head-row b{font-size:1rem}
+.live{font-size:.7rem;color:var(--ok);font-weight:700;display:flex;align-items:center;gap:6px}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">⚡</div>
+  <div>
+    <h1>Queda de Tensão · NBR 5410:2004</h1>
+    <div class="sub">127/220/380 V · Cu ou Al · PVC ou XLPE/EPR · FCT e FCA</div>
+  </div>
+</header>
+
+<div class="layout">
+<div>
+<div class="card">
+  <div class="group">
+    <div class="sec-title"><span class="n">1</span>Circuito e carga</div>
+    <div class="grid">
+      <div><label>Tipo de circuito</label>
+        <select id="tipo" onchange="atualizarTensoes()">
+          <option value="mono">Monofásico (fase+neutro)</option>
+          <option value="tri">Trifásico</option>
+        </select></div>
+      <div><label>Tensão nominal</label><select id="tensao"></select></div>
+      <div><label>Potência (W)</label><input type="number" id="potencia" value="5000" min="1" step="any" inputmode="decimal"></div>
+      <div><label>Fator de potência (cos φ)</label><input type="number" id="fp" value="0.92" step="0.01" min="0.1" max="1" inputmode="decimal"></div>
+      <div><label class="chk"><input type="checkbox" id="motor" onchange="toggleMotor()"> Circuito para motor (η)</label>
+        <input type="number" id="eta" value="0.85" step="0.01" min="0.1" max="1" placeholder="Rendimento (η)" disabled inputmode="decimal"></div>
+      <div><label>Comprimento (m)</label><input type="number" id="dist" value="30" min="0.1" step="any" inputmode="decimal"></div>
+    </div>
+  </div>
+  <div class="group">
+    <div class="sec-title"><span class="n">2</span>Condutor</div>
+    <div class="grid">
+      <div><label>Material</label>
+        <select id="material" onchange="atualizarSecoes()">
+          <option value="cu">Cobre</option>
+          <option value="al">Alumínio</option>
+        </select></div>
+      <div><label>Isolação</label>
+        <select id="isolacao" onchange="atualizarTemperaturas()">
+          <option value="pvc">PVC (70 °C)</option>
+          <option value="xlpe">XLPE/EPR (90 °C)</option>
+        </select></div>
+      <div><label>Seção (mm²)</label><select id="secao"></select></div>
+      <div><label>Circuitos agrupados (FCA)</label><input type="number" id="agrup" value="1" min="1" max="30" step="1" inputmode="numeric"></div>
+      <div><label>Temperatura ambiente (FCT)</label><select id="temp"></select></div>
+    </div>
+  </div>
+  <div class="group">
+    <div class="sec-title"><span class="n">3</span>Eletroduto e proteção</div>
+    <div class="grid">
+      <div><label>Tipo de eletroduto</label>
+        <select id="tipoEletroduto" onchange="atualizarDiametros()">
+          <option value="corrugado">PVC corrugado flexível</option>
+          <option value="pead">PEAD flexível</option>
+        </select></div>
+      <div><label>Diâmetro</label><select id="diametro"></select></div>
+      <div><label>Disjuntor (In)</label><select id="disj"></select></div>
+      <div><label>Identificação (para salvar)</label><input type="text" id="nome" maxlength="60" placeholder="ex.: QD-01 / Circ. 3"></div>
+    </div>
+  </div>
+  <button onclick="calcular()">Calcular</button>
+</div>
+</div>
+
+<div class="side">
+<div class="card res" id="resultado">
+  <div class="head-row" style="margin-bottom:12px"><b>Resultado</b><span class="live">atualiza automaticamente</span></div>
+  <div class="kpis">
+    <div class="kpi"><span>Corrente (Ib)</span><b id="rI"></b></div>
+    <div class="kpi"><span>Queda ΔV · limite 4 %</span><b id="rDV"></b></div>
+  </div>
+  <div class="line st"><span>Queda de tensão</span><span id="rBadgeDV"></span></div>
+  <div class="line st"><span>Ampacidade do cabo</span><span id="rBadgeAmp"></span></div>
+  <div class="line st"><span>Eletroduto</span><span id="rBadgeEletroduto"></span></div>
+  <div class="line st"><span>Disjuntor</span><span id="rBadgeDisj"></span></div>
+  <div class="note" id="rAviso" style="color:var(--warn)"></div>
+  <div class="line"><span>Seção sugerida (ΔV ≤ 4 % e Iz ≥ Ib)</span><b id="rSugestao"></b></div>
+  <div class="line"><span>Capacidade base (B1, 2/3 cond.)</span><b id="rCapBase"></b></div>
+  <div class="line"><span>FCT × FCA</span><b id="rFatores"></b></div>
+  <div class="line"><span>Capacidade corrigida (Iz)</span><b id="rCapCorr"></b></div>
+  <div class="line"><span>Ocupação do eletroduto</span><b id="rOcup"></b></div>
+  <div class="line"><span>Faixa para In (Ib ≤ In ≤ Iz)</span><b id="rFaixa"></b></div>
+  <button onclick="salvar()">Salvar este cálculo</button>
+  <details><summary>Notas técnicas e referências normativas</summary>
+  <div class="note">
+    Ampacidade extraída das tabelas 36 (PVC) e 37 (XLPE/EPR) da ABNT NBR 5410:2004, método de referência B1, para 2 ou 3 condutores carregados. FCT conforme tabela 40 (referência 30 °C = 1,00; faixas distintas para PVC e XLPE, pois a temperatura máxima no condutor difere: 70 °C para PVC e 90 °C para XLPE/EPR). FCA conforme tabela 42, linha 1 (condutores agrupados em feixe). Limite de queda de tensão de 4 % conforme item 6.2.7.2 (circuitos terminais); para trechos a partir do transformador ou ponto de entrega, os limites de 6.2.7.1 podem chegar a 5 % ou 7 % — não são o alvo deste cálculo. Taxa de ocupação máxima do eletroduto conforme item 6.2.11.1.6 (53 % para 1 condutor, 31 % para 2, 40 % para 3 ou mais). A fórmula de queda de tensão usa a resistividade do condutor na temperatura de serviço (ρ = ρ₂₀·[1+α·(T−20)]), garantindo maior aderência à realidade que as constantes fixas 56/35 a 20 °C. A NBR 5410 não define fórmula fechada; o critério é atender ao limite de 4 % com a corrente de projeto (6.2.7.4). Diâmetros de eletroduto e diâmetro externo de cabo são valores de catálogo aproximados — confira o datasheet do fabricante. Sempre valide o resultado final com as tabelas completas da norma e as exigências da concessionária antes de emitir o projeto.
+  </div>
+  <div class="note">
+    Disjuntor: verificação de proteção contra sobrecarga conforme item 5.3.4.1 (IB ≤ In ≤ Iz e I₂ ≤ 1,45·Iz). Para disjuntores NBR NM 60898 / IEC 60898 (I₂ = 1,45·In) ou IEC 60947-2 (I₂ = 1,30·In), a condição I₂ ≤ 1,45·Iz fica atendida quando In ≤ Iz. Não verifica curto-circuito (5.3.5), seletividade nem corrente de partida de motores — essas verificações devem ser feitas separadamente.
+    Alumínio 10 mm²: valores do catálogo Prysmian Multiplexado 0,6/1 kV (isolação PE 70 °C; 40 °C de ambiente + sol de 1000 W/m², sem vento; duplex 46 A e quadruplex 29 A). Já incluem a temperatura, por isso FCT e FCA não são aplicados. A NBR 5410 (tabela 47) exige mínimo de 16 mm² em alumínio nas instalações fixas — use seções menores apenas em rede aérea/ramal, conforme a norma da concessionária.
+  </div>
+  </details>
+</div>
+
+<div class="card">
+  <div class="head-row">
+    <b>Cálculos salvos</b>
+    <button id="btnLimpar" class="danger" onclick="limparTudo()">Apagar todos</button>
+  </div>
+  <div id="lista"></div>
+  <div class="note" id="stMsg"></div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// 1. DADOS DE ENTRADA DEPENDENTES
+// ============================================================
+const secoesCu = [1.5,2.5,4,6,10,16,25,35,50,70,95];
+const secoesAl = [10,16,25,35,50,70,95];
+const secaoSel = document.getElementById('secao');
+function atualizarSecoes(){
+  const mat = document.getElementById('material').value;
+  const lista = mat==='cu' ? secoesCu : secoesAl;
+  const atual = secaoSel.value;
+  secaoSel.innerHTML='';
+  lista.forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s+' mm²'; secaoSel.appendChild(o);
+  });
+  secaoSel.value = lista.includes(+atual) ? atual : (mat==='cu' ? 4 : 16);
+}
+atualizarSecoes();
+
+const tensaoSel = document.getElementById('tensao');
+function atualizarTensoes(){
+  const tipo = document.getElementById('tipo').value;
+  const opcoes = tipo==='mono' ? [127,220] : [220,380];
+  tensaoSel.innerHTML='';
+  opcoes.forEach(v=>{
+    const o=document.createElement('option'); o.value=v; o.textContent=v+' V'; tensaoSel.appendChild(o);
+  });
+}
+atualizarTensoes();
+
+function toggleMotor(){
+  document.getElementById('eta').disabled = !document.getElementById('motor').checked;
+}
+
+// Diâmetro interno aproximado (mm) — valores de catálogo
+const diamCorrugado = [16,20,25,32,40,50,60,75];
+const diamPead = [32,40,50,63,75,90,110];
+function mmParaPol(mm){ return (mm/25.4).toFixed(2)+'"'; }
+const diametroSel = document.getElementById('diametro');
+function atualizarDiametros(){
+  const tipoE = document.getElementById('tipoEletroduto').value;
+  const lista = tipoE==='corrugado' ? diamCorrugado : diamPead;
+  diametroSel.innerHTML='';
+  lista.forEach(d=>{
+    const o=document.createElement('option'); o.value=d;
+    o.textContent = d+' mm (~'+mmParaPol(d)+')';
+    diametroSel.appendChild(o);
+  });
+}
+atualizarDiametros();
+
+// Diâmetro externo aproximado do cabo unipolar 750 V (mm) — referência de catálogo
+const diamCabo = {1.5:3.4,2.5:3.9,4:4.6,6:5.4,10:6.9,16:8.2,25:10.2,35:11.5,50:13.5,70:15.8,95:18.0};
+
+// ============================================================
+// 2. TABELAS NBR 5410
+// ============================================================
+// Tabela 36 — PVC (70 °C) — B1 — [2 cond., 3 cond.]
+const capCuPVC  = {1.5:[17.5,15.5],2.5:[24,21],4:[32,28],6:[41,36],10:[57,50],16:[76,68],25:[101,89],35:[125,110],50:[151,134],70:[192,171],95:[232,207]};
+const capAlPVC  = {16:[60,53],25:[79,70],35:[97,86],50:[118,104],70:[150,133],95:[181,161]};
+
+// Tabela 37 — XLPE/EPR (90 °C) — B1 — [2 cond., 3 cond.]
+const capCuXLPE = {1.5:[23,20],2.5:[31,28],4:[42,37],6:[54,48],10:[75,66],16:[100,88],25:[133,117],35:[164,144],50:[198,175],70:[253,222],95:[306,269]};
+const capAlXLPE = {16:[79,71],25:[105,93],35:[130,116],50:[157,140],70:[200,179],95:[242,217]};
+
+// Al 10 mm² — Prysmian Multiplexado (PE 70 °C; 40 °C + sol) — [duplex 1x10, quadruplex 3x10]
+const capAl10 = [46,29];
+
+function capacidade(mat,iso,s,idx){
+  if(mat==='al' && s<16) return capAl10[idx];
+  const tab = iso==='pvc' ? (mat==='cu'?capCuPVC:capAlPVC) : (mat==='cu'?capCuXLPE:capAlXLPE);
+  return tab[s][idx];
+}
+
+// ============================================================
+// 3. RESISTIVIDADE NA TEMPERATURA DE SERVIÇO
+// ============================================================
+// ρ₂₀ (Ω·mm²/m) e α (1/°C)
+const RHO20 = {cu:0.0172, al:0.0282};
+const ALPHA = {cu:0.00393, al:0.00403};
+
+function resistividade(mat, iso){
+  const T = iso==='pvc' ? 70 : 90;
+  return RHO20[mat] * (1 + ALPHA[mat] * (T - 20));
+}
+
+// ============================================================
+// 4. FCT — Tabela 40
+// ============================================================
+const fctPVC  = {10:1.22,15:1.17,20:1.12,25:1.06,30:1.00,35:0.94,40:0.87,45:0.79,50:0.71,55:0.61,60:0.50};
+const fctXLPE = {10:1.15,15:1.12,20:1.08,25:1.04,30:1.00,35:0.96,40:0.91,45:0.87,50:0.82,55:0.76,60:0.71,65:0.65,70:0.58,75:0.50,80:0.41};
+const tempSel = document.getElementById('temp');
+function atualizarTemperaturas(){
+  const iso = document.getElementById('isolacao').value;
+  const tab = iso==='pvc' ? fctPVC : fctXLPE;
+  tempSel.innerHTML='';
+  Object.keys(tab).forEach(t=>{
+    const o=document.createElement('option'); o.value=t; o.textContent=t+' °C'; tempSel.appendChild(o);
+  });
+  tempSel.value = 30;
+}
+atualizarTemperaturas();
+
+// ============================================================
+// 5. FCA — Tabela 42, linha 1 (feixe)
+// ============================================================
+function fcaFn(n){
+  if(n<=1) return 1.00;
+  if(n===2) return 0.80;
+  if(n===3) return 0.70;
+  if(n===4) return 0.65;
+  if(n===5) return 0.60;
+  if(n===6) return 0.57;
+  if(n===7) return 0.54;
+  if(n===8) return 0.52;
+  if(n<=11) return 0.50;
+  if(n<=15) return 0.45;
+  if(n<=19) return 0.41;
+  return 0.38;
+}
+
+// ============================================================
+// 6. DISJUNTORES COMERCIAIS
+// ============================================================
+const ratings = [6,10,13,16,20,25,32,40,50,63,70,80,90,100,125,150,175,200,225,250];
+document.getElementById('disj').innerHTML = '<option value="">— não verificar —</option>' + ratings.map(r=>'<option value="'+r+'">'+r+' A</option>').join('');
+
+// ============================================================
+// 7. CÁLCULO PRINCIPAL
+// ============================================================
+function calcular(){
+  // --- validação básica ---
+  const tipo = document.getElementById('tipo').value;
+  const V = parseFloat(document.getElementById('tensao').value);
+  const P = parseFloat(document.getElementById('potencia').value);
+  const fp = parseFloat(document.getElementById('fp').value);
+  const L = parseFloat(document.getElementById('dist').value);
+  const mat = document.getElementById('material').value;
+  const iso = document.getElementById('isolacao').value;
+  const S = parseFloat(document.getElementById('secao').value);
+  const n = parseInt(document.getElementById('agrup').value, 10);
+  const T = parseInt(document.getElementById('temp').value, 10);
+
+  if(!isFinite(V)||!isFinite(P)||!isFinite(fp)||!isFinite(L)||!isFinite(S)||!isFinite(n)||!isFinite(T)
+     || V<=0||P<=0||fp<=0||L<=0||S<=0||n<1||T<0){
+    alert('Preencha todos os campos com valores válidos (> 0).');
+    return;
+  }
+
+  // --- corrente de projeto ---
+  const isMotor = document.getElementById('motor').checked;
+  const etaRaw = isMotor ? parseFloat(document.getElementById('eta').value) : 1;
+  const eta = (isFinite(etaRaw) && etaRaw > 0) ? etaRaw : 1;
+  let I;
+  if(tipo==='mono'){
+    I = P/(V*fp*eta);
+  } else {
+    I = P/(Math.sqrt(3)*V*fp*eta);
+  }
+
+  // --- queda de tensão com ρ na temperatura de serviço ---
+  const rho = resistividade(mat, iso);
+  let dV;
+  if(tipo==='mono'){
+    dV = (2*L*I*fp*rho)/S;
+  } else {
+    dV = (Math.sqrt(3)*L*I*fp*rho)/S;
+  }
+  const dVpct = (dV/V)*100;
+
+  // --- ampacidade ---
+  const idx = tipo==='mono' ? 0 : 1;
+  const base = capacidade(mat,iso,S,idx);
+  const alPequeno = (mat==='al' && S<16);
+  const f1 = alPequeno ? 1 : (iso==='pvc' ? fctPVC[T] : fctXLPE[T]);
+  const f2 = alPequeno ? 1 : fcaFn(n);
+  const capCorrigida = base*f1*f2;
+
+  // --- sugestão automática de seção ---
+  const rhoSug = resistividade(mat, iso);
+  const secoesDisponiveis = mat==='cu' ? secoesCu : secoesAl;
+  let sugestao = null;
+  for(const s of secoesDisponiveis){
+    if(mat==='al' && s<16) continue; // Al < 16 mm² só em rede aérea — não sugerir
+    // queda de tensão
+    let dvTest;
+    if(tipo==='mono'){
+      dvTest = (2*L*I*fp*rhoSug)/s;
+    } else {
+      dvTest = (Math.sqrt(3)*L*I*fp*rhoSug)/s;
+    }
+    if((dvTest/V)*100 > 4.0) continue;
+    // ampacidade
+    const baseTest = capacidade(mat,iso,s,idx);
+    const f1t = iso==='pvc' ? fctPVC[T] : fctXLPE[T];
+    const f2t = fcaFn(n);
+    const izTest = baseTest*f1t*f2t;
+    if(izTest < I) continue;
+    sugestao = s;
+    break;
+  }
+
+  // --- ocupação do eletroduto ---
+  const Dint = parseFloat(document.getElementById('diametro').value);
+  const dCabo = diamCabo[S];
+  const numCondutoresPorCircuito = tipo==='mono' ? 2 : 3;
+  const totalCondutores = numCondutoresPorCircuito * n;
+  const taxaMax = totalCondutores<=1 ? 0.53 : (totalCondutores===2 ? 0.31 : 0.40);
+  const areaTubo = Math.PI/4*Math.pow(Dint,2);
+  const areaCabos = totalCondutores*(Math.PI/4*Math.pow(dCabo,2));
+  const ocupacaoPct = (areaCabos/areaTubo)*100;
+  const ocupacaoMaxPct = taxaMax*100;
+
+  // --- disjuntor ---
+  const In = parseFloat(document.getElementById('disj').value);
+  const Iz = capCorrigida;
+  const cand = ratings.filter(r=>r>=I && r<=Iz);
+
+  // --- preenchimento da UI ---
+  document.getElementById('rI').textContent = I.toFixed(2)+' A';
+  document.getElementById('rDV').textContent = dV.toFixed(2)+' V  ('+dVpct.toFixed(2)+' %)';
+
+  const bDV = document.getElementById('rBadgeDV');
+  bDV.className='badge '+(dVpct<=4.0?'ok':'bad');
+  bDV.textContent = dVpct<=4.0 ? 'Dentro do limite' : 'Acima do limite — aumente a seção';
+
+  document.getElementById('rSugestao').textContent = sugestao
+    ? sugestao+' mm²'
+    : 'Nenhuma seção comercial atende a ambos os critérios';
+
+  document.getElementById('rCapBase').textContent = base.toFixed(1)+' A';
+  document.getElementById('rFatores').textContent = f1.toFixed(2)+' × '+f2.toFixed(2)+' = '+(f1*f2).toFixed(2);
+  document.getElementById('rCapCorr').textContent = capCorrigida.toFixed(1)+' A';
+
+  const bAmp = document.getElementById('rBadgeAmp');
+  bAmp.className='badge '+(capCorrigida>=I?'ok':'bad');
+  bAmp.textContent = capCorrigida>=I ? 'Cabo suporta a corrente' : 'Cabo insuficiente — aumente a seção';
+
+  document.getElementById('rOcup').textContent = ocupacaoPct.toFixed(1)+' % (máx. permitido: '+ocupacaoMaxPct.toFixed(0)+' %, '+totalCondutores+' condutores)';
+  const bEletroduto = document.getElementById('rBadgeEletroduto');
+  const okOcup = ocupacaoPct <= ocupacaoMaxPct;
+  bEletroduto.className = 'badge '+(okOcup?'ok':'bad');
+  bEletroduto.textContent = okOcup ? 'Diâmetro suficiente' : 'Diâmetro insuficiente — aumente o eletroduto';
+
+  if(alPequeno){
+    document.getElementById('rOcup').textContent = 'não se aplica (multiplexado aéreo)';
+    bEletroduto.className = 'badge'; bEletroduto.textContent = 'N/A';
+  }
+
+  document.getElementById('rAviso').textContent = alPequeno
+    ? 'Atenção: alumínio abaixo de 16 mm² não é permitido em instalações fixas pela NBR 5410 (tabela 47). Valores do catálogo Prysmian Multiplexado (já incluem 40 °C + sol; sem FCT/FCA) — válido só para rede aérea/ramal conforme norma da concessionária.'
+    : '';
+
+  document.getElementById('rFaixa').textContent = I<=Iz
+    ? I.toFixed(1)+' a '+Iz.toFixed(1)+' A'+(cand.length ? ' (comercial: até '+Math.max(...cand)+' A)' : ' — sem valor comercial na faixa')
+    : 'inexistente (Ib > Iz: aumente a seção)';
+
+  const bD = document.getElementById('rBadgeDisj');
+  let dOk = null;
+  if(isNaN(In)){
+    bD.className='badge'; bD.textContent='Não verificado — escolha um disjuntor';
+  } else if(In<I){
+    dOk=false; bD.className='badge bad'; bD.textContent='Ajustar: In < Ib — subdimensionado (atua em carga normal)';
+  } else if(In>Iz){
+    dOk=false; bD.className='badge bad'; bD.textContent='Ajustar: In > Iz — não protege o cabo; reduza In ou aumente a seção';
+  } else {
+    dOk=true; bD.className='badge ok'; bD.textContent='Permitido: Ib ≤ In ≤ Iz';
+  }
+
+  ultimo = {
+    I:+I.toFixed(2),
+    dVpct:+dVpct.toFixed(2),
+    Iz:+Iz.toFixed(1),
+    In:isNaN(In)?null:In,
+    dvOk:dVpct<=4.0,
+    ampOk:Iz>=I,
+    ocOk:alPequeno?null:okOcup,
+    dOk:dOk,
+    sugestao:sugestao
+  };
+  document.getElementById('resultado').classList.add('show');
+}
+
+// ============================================================
+// 8. PERSISTÊNCIA (localStorage com fallback)
+// ============================================================
+const KEY = 'queda_tensao_nbr5410_v1';
+const IDS = ['tipo','tensao','potencia','fp','motor','eta','dist','material','isolacao','secao','agrup','temp','tipoEletroduto','diametro','disj','nome'];
+let mem = [], usaMem = false, ultimo = null, confirmando = false, tmr = null;
+
+function ler(){
+  if(usaMem) return mem;
+  try{
+    const r = localStorage.getItem(KEY);
+    return r ? JSON.parse(r) : [];
+  }catch(e){
+    usaMem = true;
+    return mem;
+  }
+}
+function gravar(a){
+  mem = a;
+  if(usaMem) return;
+  try{
+    localStorage.setItem(KEY, JSON.stringify(a));
+  }catch(e){
+    usaMem = true;
+  }
+}
+function esc(t){
+  return String(t).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function mk(v){ return v===null ? '—' : (v ? '✓' : '✗'); }
+
+function salvar(){
+  calcular();
+  const inp = {};
+  IDS.forEach(id=>{
+    const e = document.getElementById(id);
+    inp[id] = e.type==='checkbox' ? e.checked : e.value;
+  });
+  const a = ler();
+  a.unshift({id:Date.now(), ts:new Date().toLocaleString('pt-BR'), inp:inp, r:ultimo});
+  gravar(a);
+  renderLista();
+}
+
+function renderLista(){
+  const a = ler();
+  const box = document.getElementById('lista');
+  document.getElementById('stMsg').textContent = usaMem
+    ? 'Armazenamento do navegador indisponível: os cálculos ficam salvos só enquanto esta página estiver aberta.'
+    : '';
+  if(!a.length){
+    box.innerHTML = '<div class="note">Nenhum cálculo salvo.</div>';
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  a.forEach(c=>{
+    const i = c.inp, r = c.r;
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML =
+      '<b>'+esc(i.nome||'Sem identificação')+'</b> <span style="color:var(--muted)">'+esc(c.ts)+'</span><br>'
+      +(i.tipo==='mono'?'Mono':'Tri')+' '+esc(i.tensao)+' V · '+esc(i.potencia)+' W · '+esc(i.dist)+' m · '+esc(i.secao)+' mm² '+(i.material==='cu'?'Cu':'Al')+'/'+(i.isolacao==='pvc'?'PVC':'XLPE')
+      +'<br>Ib '+r.I+' A · ΔV '+r.dVpct+' % · Iz '+r.Iz+' A · Disj. '+(r.In===null?'—':r.In+' A')
+      +'<br>Queda '+mk(r.dvOk)+' · Cabo '+mk(r.ampOk)+' · Eletroduto '+mk(r.ocOk)+' · Disjuntor '+mk(r.dOk)
+      +(r.sugestao ? ' · Sugestão: '+r.sugestao+' mm²' : '')
+      +'<div class="acts">'
+      +'<button class="sec" data-a="c" data-id="'+c.id+'">Carregar</button>'
+      +'<button class="sec" data-a="d" data-id="'+c.id+'">Apagar</button>'
+      +'</div>';
+    frag.appendChild(div);
+  });
+  box.innerHTML = '';
+  box.appendChild(frag);
+}
+
+document.getElementById('lista').addEventListener('click', e=>{
+  const b = e.target.closest('button');
+  if(!b) return;
+  const id = +b.dataset.id;
+  if(b.dataset.a==='d'){
+    gravar(ler().filter(c=>c.id!==id));
+    renderLista();
+  } else {
+    const c = ler().find(c=>c.id===id);
+    if(c) carregar(c.inp);
+  }
+});
+
+function setV(id,v){
+  const e = document.getElementById(id);
+  if(e.type==='checkbox') e.checked = v;
+  else e.value = v;
+}
+
+function carregar(i){
+  setV('tipo',i.tipo); atualizarTensoes(); setV('tensao',i.tensao);
+  setV('material',i.material); atualizarSecoes(); setV('secao',i.secao);
+  setV('isolacao',i.isolacao); atualizarTemperaturas(); setV('temp',i.temp);
+  setV('tipoEletroduto',i.tipoEletroduto); atualizarDiametros(); setV('diametro',i.diametro);
+  ['potencia','fp','motor','eta','dist','agrup','disj','nome'].forEach(k=>setV(k,i[k]));
+  toggleMotor();
+  calcular();
+}
+
+function limparTudo(){
+  const b = document.getElementById('btnLimpar');
+  if(!confirmando){
+    confirmando = true;
+    b.textContent = 'Confirmar: apagar tudo?';
+    tmr = setTimeout(()=>{ confirmando = false; b.textContent = 'Apagar todos'; }, 4000);
+    return;
+  }
+  clearTimeout(tmr);
+  confirmando = false;
+  b.textContent = 'Apagar todos';
+  gravar([]);
+  renderLista();
+}
+
+// ============================================================
+// 9. INICIALIZAÇÃO
+// ============================================================
+calcular();
+renderLista();
+renderLista();
+// Recalcular automaticamente ao alterar qualquer campo
+document.querySelectorAll('.layout select, .layout input').forEach(el=>{
+  if(el.id==='nome') return;
+  el.addEventListener(el.tagName==='SELECT'||el.type==='checkbox'?'change':'input', ()=>setTimeout(()=>{ try{calcular();}catch(e){} },0));
+});
+</script>
+</body>
+</html>
